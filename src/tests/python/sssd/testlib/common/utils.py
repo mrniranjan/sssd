@@ -979,6 +979,10 @@ class ADOperations(object):
         else:
             return True
 
+    def add_new_function(self):
+        """ Add a new function """
+        print("does nothing ")
+
     def remove_user_from_group(self, group, user):
         """ Remove User from Group membership
 
