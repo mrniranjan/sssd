@@ -218,7 +218,7 @@ class DirSrv(object):
             if not self._import_certs(pkcs_file, pwfile):
                 raise DirSrvException("importing certificates failed")
         set_trust_cmd = 'certutil -M -d %s -n %s'\
-                        ' -t "CTu,u,u" -f %s' % (self.dsinst_path,
+                        ' -t "CT,C,T" -f %s' % (self.dsinst_path,
                                                  canick, pwfile)
         self.multihost.run_command(create_cert_dir)
         self.multihost.run_command(set_trust_cmd)

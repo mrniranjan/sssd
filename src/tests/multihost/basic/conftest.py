@@ -281,7 +281,7 @@ def enable_files_domain(session_multihost):
     """
     session_multihost.master[0].transport.get_file('/etc/sssd/sssd.conf',
                                                    '/tmp/sssd.conf')
-    sssdconfig = ConfigParser.SafeConfigParser()
+    sssdconfig = ConfigParser.RawConfigParser(delimiters=('='))
     sssdconfig.read('/tmp/sssd.conf')
     sssd_section = 'sssd'
     if sssd_section in sssdconfig.sections():
