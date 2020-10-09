@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: example.test
+      type: sssd
+      hosts:
+        - name: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          external_hostname: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          role: client
+        - name: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          external_hostname: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          role: master
+        - name: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          external_hostname: qe-blade-10.idmqe.lab.eng.bos.redhat.com
+          role: master

@@ -1,0 +1,23 @@
+windows_test_dir: '/home/administrator'
+root_password: 'redhat'
+#ssh_key_filename: ~/.ssh/id_rsa
+domains:
+    - name: testrelm.test
+      type: sssd
+      hosts:
+        - name: trinity.sarabhai.test
+          external_hostname: trinity.sarabhai.test
+          role: client
+        - name: server1.testrealm.test
+          external_hostname: server1.testrealm.test
+          role:  master
+    - name: SARABHAI.TEST
+      type: ad
+      hosts:
+        - name: vikram.sarabhai.test
+          external_hostname: vikram.sarabhai.test
+          ip: 192.168.122.216
+          role: 'ad'
+          username: 'administrator'
+          password: 'Secret123'
+          host_type: 'windows'

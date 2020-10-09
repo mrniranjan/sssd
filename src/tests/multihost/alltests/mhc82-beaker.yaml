@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: example.test
+      type: sssd
+      hosts:
+        - name: vm-idm-016.lab.eng.pnq.redhat.com
+          external_hostname: vm-idm-016.lab.eng.pnq.redhat.com
+          role: client
+        - name: vm-idm-016.lab.eng.pnq.redhat.com
+          external_hostname: vm-idm-016.lab.eng.pnq.redhat.com
+          role: master
+        - name: vm-idm-016.lab.eng.pnq.redhat.com
+          external_hostname: vm-idm-016.lab.eng.pnq.redhat.com
+          role: master

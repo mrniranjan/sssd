@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: example.test
+      type: sssd
+      hosts:
+        - name: vm-10-0-154-49.hosted.upshift.rdu2.redhat.com
+          external_hostname: vm-10-0-154-49.hosted.upshift.rdu2.redhat.com
+          role: client
+        - name: vm-10-0-153-149.hosted.upshift.rdu2.redhat.com
+          external_hostname: vm-10-0-153-149.hosted.upshift.rdu2.redhat.com
+          role: master
+        - name: vm-10-0-153-149.hosted.upshift.rdu2.redhat.com
+          external_hostname: vm-10-0-153-149.hosted.upshift.rdu2.redhat.com
+          role: master

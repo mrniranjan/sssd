@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: example.test
+      type: sssd
+      hosts:
+        - name: ds-server.testrealm.test
+          external_hostname: ds-server.testrealm.test
+          role: client
+        - name: ds-server.testrealm.test
+          external_hostname: ds-server.testrealm.test
+          role: master
+        - name: ds-server.testrealm.test
+          external_hostname: ds-server.testrealm.test
+          role: master

@@ -1,0 +1,22 @@
+windows_test_dir: '/home/administrator'
+root_password: 'redhat'
+domains:
+    - name: testrelm.test
+      type: sssd
+      hosts:
+        - name: vm-idm-004.lab.eng.pnq.redhat.com
+          external_hostname: vm-idm-004.lab.eng.pnq.redhat.com 
+          role: client
+        - name: vm-idm-004.lab.eng.pnq.redhat.com
+          external_hostname: vm-idm-004.lab.eng.pnq.redhat.com 
+          role:  master
+    - name: MRNIRANJAN.COM
+      type: ad
+      hosts:
+        - name: ad001.mrniranjan.com
+          external_hostname: ad001.mrniranjan.com
+          ip: 10.0.141.252 
+          role: 'ad'
+          username: 'Administrator'
+          password: 'Secret123'
+          host_type: 'windows'

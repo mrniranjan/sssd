@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><testsuite errors="1" failures="0" name="pytest" skipped="0" tests="1" time="97.631"><testcase time="75.490"></testcase><testcase classname="pytest" name="internal" time="0.000"><error message="internal error">Traceback (most recent call last):
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/main.py&quot;, line 213, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/main.py&quot;, line 257, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/hooks.py&quot;, line 289, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 87, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 81, in &lt;lambda&gt;
+    firstresult=hook.spec.opts.get(&quot;firstresult&quot;) if hook.spec else False,
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 208, in _multicall
+    return outcome.get_result()
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 80, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 187, in _multicall
+    res = hook_impl.function(*args)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/main.py&quot;, line 278, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/hooks.py&quot;, line 289, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 87, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 81, in &lt;lambda&gt;
+    firstresult=hook.spec.opts.get(&quot;firstresult&quot;) if hook.spec else False,
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 208, in _multicall
+    return outcome.get_result()
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 80, in get_result
+    raise ex[1].with_traceback(ex[2])
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 187, in _multicall
+    res = hook_impl.function(*args)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/runner.py&quot;, line 72, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/runner.py&quot;, line 87, in runtestprotocol
+    reports.append(call_and_report(item, &quot;call&quot;, log))
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/_pytest/runner.py&quot;, line 169, in call_and_report
+    report = hook.pytest_runtest_makereport(item=item, call=call)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/hooks.py&quot;, line 289, in __call__
+    return self._hookexec(self, self.get_hookimpls(), kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 87, in _hookexec
+    return self._inner_hookexec(hook, methods, kwargs)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/manager.py&quot;, line 81, in &lt;lambda&gt;
+    firstresult=hook.spec.opts.get(&quot;firstresult&quot;) if hook.spec else False,
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pluggy/callers.py&quot;, line 203, in _multicall
+    gen.send(outcome)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pytest_modifyjunit-1.2-py3.6.egg/pytest_modifyjunit/plugin.py&quot;, line 90, in pytest_runtest_makereport
+    self._add_marks(item, rep)
+  File &quot;/home/mniranja/venv/lib/python3.6/site-packages/pytest_modifyjunit-1.2-py3.6.egg/pytest_modifyjunit/plugin.py&quot;, line 48, in _add_marks
+    mark_info = item.get_marker(&apos;xmlprop&apos;)
+AttributeError: &apos;Function&apos; object has no attribute &apos;get_marker&apos;</error></testcase></testsuite>

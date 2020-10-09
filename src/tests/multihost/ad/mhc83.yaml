@@ -1,0 +1,22 @@
+windows_test_dir: '/home/administrator'
+root_password: 'redhat'
+domains:
+    - name: testrelm.test
+      type: sssd
+      hosts:
+        - name: qe-blade-03.idmqe.lab.eng.bos.redhat.com
+          external_hostname: qe-blade-03.idmqe.lab.eng.bos.redhat.com
+          role: client
+        - name: qe-blade-03.idmqe.lab.eng.bos.redhat.com
+          external_hostname: qe-blade-03.idmqe.lab.eng.bos.redhat.com
+          role:  master
+    - name: CYGNUS.TEST
+      type: ad
+      hosts:
+        - name: srv1.cygnus.test
+          external_hostname: srv1.cygnus.test
+          ip: 10.65.201.120
+          role: 'ad'
+          username: 'Administrator'
+          password: 'Secret123'
+          host_type: 'windows'

@@ -1,0 +1,310 @@
+$ realm join T2ADPY12R83G002.COM --client-software=sssd --server-software=active-directory --membership-software=samba -v
+
+ * Resolving: _ldap._tcp.t2adpy12r83g002.com
+ * Performing LDAP DSE lookup on: 10.0.107.77
+ * Successfully discovered: t2adpy12r83g002.com
+ * Required files: /usr/sbin/oddjobd, /usr/libexec/oddjob/mkhomedir, /usr/sbin/sssd, /usr/bin/net
+ * LANG=C LOGNAME=root KRB5CCNAME=/var/cache/realmd/realm-ad-kerberos-WWXAN0 /usr/bin/net -s /var/cache/realmd/realmd-smb-conf.C8XAN0 -k ads join t2adpy12r83g002.com
+Using short domain name -- T2ADPY12R83G002
+Joined 'VM-10-0-111-60' to dns domain 't2adpy12r83g002.com'
+DNS Update for vm-10-0-111-60.hosted.upshift.rdu2.redhat.com failed: ERROR_DNS_GSS_ERROR
+DNS update failed: NT_STATUS_UNSUCCESSFUL
+ * LANG=C LOGNAME=root KRB5CCNAME=/var/cache/realmd/realm-ad-kerberos-WWXAN0 /usr/bin/net -s /var/cache/realmd/realmd-smb-conf.C8XAN0 -k ads keytab create
+ * /usr/bin/systemctl enable sssd.service
+ * /usr/bin/systemctl restart sssd.service
+ * /usr/bin/sh -c /usr/bin/authselect select sssd with-mkhomedir --force && /usr/bin/systemctl enable oddjobd.service && /usr/bin/systemctl start oddjobd.service
+Backup stored at /var/lib/authselect/backups/2020-07-09-17-31-59.8ma4wi
+Profile "sssd" was selected.
+The following nsswitch maps are overwritten by the profile:
+- passwd
+- group
+- netgroup
+- automount
+- services
+
+Make sure that SSSD service is configured and enabled. See SSSD documentation for more information.
+ 
+- with-mkhomedir is selected, make sure pam_oddjob_mkhomedir module
+  is present and oddjobd service is enabled and active
+  - systemctl enable --now oddjobd.service
+
+Created symlink /etc/systemd/system/multi-user.target.wants/oddjobd.service → /usr/lib/systemd/system/oddjobd.service.
+ * Successfully enrolled machine in realm
+
+2. Set selinux in permissive mode 
+
+$ setenforce 0
+
+3. Configure basic smb.conf with security = ads
+
+4. start winbind and smb service 
+
+5. Run sha1hmac to get current hash of /var/lib/samba/private/secrets.tdb
+
+$ sha1hmac /var/lib/samba/private/secrets.tdb
+a41e948a5d4bcf8990150862c5dcaa9b33eb97f2  /var/lib/samba/private/secrets.tdb
+
+
+6. Run stat command on /var/lib/samba/private/secrets.tdb
+
+$ stat /var/lib/samba/private/secrets.tdb
+
+  File: /var/lib/samba/private/secrets.tdb
+  Size: 581632    	Blocks: 1136       IO Block: 4096   regular file
+Device: fc03h/64515d	Inode: 25230056    Links: 1
+Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)
+Context: system_u:object_r:samba_var_t:s0
+Access: 2020-07-09 13:31:57.729529787 -0400
+Modify: 2020-07-09 13:31:57.569529787 -0400
+Change: 2020-07-09 13:31:57.569529787 -0400
+ Birth: -
+
+
+7. Run tdbdump on secrets.tdb
+
+$ tdbdump /var/lib/samba/private/secrets.tdb
+
+$ tdbdump /var/lib/samba/private/secrets.tdb
+{
+key(35) = "SECRETS/PROTECT/IDS/T2ADPY12R83G002"
+data(5) = "TRUE\00"
+}
+{
+key(40) = "SECRETS/MACHINE_PASSWORD/T2ADPY12R83G002"
+data(574) = "\EE\A5\9E\E6\96\8D\E6\A8\94\EF\A4\92\EF\98\91\EB\90\8F\E2\BE\95\EE\AA\A4\EF\9E\A1\EA\B5\A1\E3\AB\B8\E3\97\AF\E3\9A\AB\EF\A5\B1\E2\AB\A5\E3\8B\84\D4\96\EE\B5\8D\EA\A3\AF\E7\9C\BF\E3\AD\B0\E2\9A\AF\EF\81\A8\EB\82\84\E6\A4\B7\E7\AD\8A\DC\97\E3\AC\8C\E2\90\8C\EE\A9\9F\EE\A6\B4\E6\AD\8F\E7\85\9B\EB\B1\B5\EB\83\8B\EE\83\83\E2\B7\B3\EF\85\8A\E6\85\AF\E6\AE\BE\E3\A5\92\E3\B0\BE\E6\81\95\EF\AD\BC\E7\A3\8F\E3\B1\8A\EE\BF\A3\EA\AF\BD\EB\BA\A7\EA\BC\A3\EA\AE\86\EA\96\96\E2\80\AE\EE\A9\83\E7\A9\B5\EB\83\B8\E7\A2\9B\E3\93\86\E6\80\A2\EE\B3\B6\E7\BC\BC\EB\A0\BD\E2\85\98\EF\9F\AB\E2\9E\A9\EF\8C\91\E3\A3\AE\EA\A9\99\EA\A9\94\E6\98\BE\EE\B4\B2\E3\A2\95\EA\82\91\E3\B2\A0\EA\BA\99\EB\91\99\D9\A9\E6\A3\B4\E3\9C\8F\EA\92\B7\E6\B8\8F\E3\99\8E\EA\B9\90\0B\EF\8A\BB\E2\B2\88\EF\9D\8B\E3\85\98\DE\95\E6\B2\AD\E7\A3\BE\EA\8A\AD\EB\87\97\EA\AF\B9\EF\A7\8D\EE\96\AD\EB\88\8F\EB\AC\B7\EE\BE\9D\EE\A5\B2\EB\A9\83\EB\AE\81\E2\B3\91\EB\AF\96\EE\96\88\EA\82\80\EA\A8\8D\E6\90\BD\E6\A6\87\E6\96\81\EF\B4\B3\E2\8C\A9\E7\84\85\E6\89\B7\EB\8D\A4\E7\B4\85\E3\B0\9D\EE\AD\BF\E6\BE\97\EE\90\8B\E6\A2\88\E7\BA\97\EB\99\97\EA\85\8E\E7\91\8D\E2\B7\86\EA\B1\B9\EA\AF\93\E6\A3\86\EE\BD\94\EF\B1\87\EF\8F\B8\EF\84\90\EA\B0\90\E2\A4\A7\EF\8E\98\E3\83\AB\EB\83\8E\E3\AC\B2\E2\AA\BB\E7\96\A9\EE\82\9C\EA\9E\93\EF\86\B9\EA\87\AC\EE\9B\83\EA\91\9F\E7\96\BE\EA\BB\AF\EA\AE\AC\D6\82\E2\BA\91\E7\98\B6\EA\A4\9A\E6\88\84\EA\97\BB\EB\97\A2\E6\94\88\E7\AA\92\E7\B1\9B\E3\B3\8E\EE\B5\9A\EB\A8\B6\E2\A9\85\E6\8C\90\EA\AB\84\EE\B9\A2\E3\B3\8D\E3\92\BA\EA\9C\94\EF\99\85\E2\B7\B9\EF\B0\96\E7\A5\91\EF\AD\A3\E6\A6\83\EF\B4\A8\E3\9A\97\CE\83\EF\B4\8B\EE\AD\A9\EA\98\A4\EF\AF\98\EB\B1\B4\E7\9A\84\E6\B2\9C\D1\A6\E3\AE\B1\E3\A4\87\E6\AA\9D\E6\AC\A1\EA\A7\94\E3\84\83\EA\89\AA\00"
+}
+{
+key(27) = "SECRETS/SID/T2ADPY12R83G002"
+data(68) = "\01\04\00\00\00\00\00\05\15\00\00\00\F2{\15\A1\A5\E63\5C.\A8\B3\98\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+}
+{
+key(31) = "SECRETS/DOMGUID/T2ADPY12R83G002"
+data(16) = "\C0}\84d\90\BC\C6K\87&\BC\8D\09T\0E\F4"
+}
+{
+key(43) = "SECRETS/MACHINE_DOMAIN_INFO/T2ADPY12R83G002"
+data(1264) = "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\C6@\81\D8\16V\D6\01\0F\00\00\00\00\00\00\00\0F\00\00\00V\00M\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00V\00M\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00$\00\00\00\02\00\00\00\1E\00 \00\04\00\02\00&\00(\00\08\00\02\00&\00(\00\0C\00\02\00\C0}\84d\90\BC\C6K\87&\BC\8D\09T\0E\F4\10\00\02\00\1A\00\00\00\02\00\00\00@\00\00\00\00\00\00\00\1F\00\00\00\14\00\02\00\C6@\81\D8\16V\D6\01\01\00\00\00\00\00\00\00\00\00\00\00\F1\AE\F1\AE\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\0F\00\00\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00\00\00\14\00\00\00\00\00\00\00\13\00\00\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\14\00\00\00\00\00\00\00\13\00\00\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\04\00\00\00\01\04\00\00\00\00\00\05\15\00\00\00\F2{\15\A1\A5\E63\5C.\A8\B3\98<\00\00\00\00\00\00\00<\00\00\00h\00o\00s\00t\00/\00v\00m\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00@\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00.\00C\00O\00M\00\00\00\C6@\81\D8\16V\D6\01\1F\00\00\00\00\00\00\00\1F\00\00\00a\00d\00p\00y\001\002\008\003\00t\002\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\00\00\84\01\00\00^\E9\8De\14j\12\F9\11\F6\0F\B4\95/\A4\EA\A1\F7a\AD\F8:\EF5\AB6q\F9\E5*\C42\16\05M\ED\EF\A8?wp;\AF&h\F0\84\B07iJ{\17\07\0C;\0C$_\EA\B4\E9Ok[qu\BC\CB\B0\C3\E0\F3-J\F1oa\BEkR9><U`|\FB\CFxJ<\E3\EF\FD\AB\A7\BE#\AF\86\AB\96\A5. C\EAuz\F8\B0\9Bx\C64\22`\F6\EC<\7F=\B8X!\EB\F7\A9'\11\F3\EE8Y\AAT\AA>f2\ED\958\91\A0\A0<\99\AEY\B4i\06\F4h\0F7\B7\A4\0FnN6P\AE\0B\00\BB\F2\88,K\F7X1\95\07\ADl\FEx\AD\A2\D7\B1\F9\AB\CD\F9\AD\E5\0F\B27\BB\9D\EFr\E9C\BA\81\BB\D1,\D6\BB\88\E5\80\A0\0D\AA=d\87i\81e3\FD)#\05qwbd\B3\05}\1D<\7F\EB\97o\0B\E4\88h\97~W\B6N\A1Mt\C6-y\AC\D3\AB\C6hT\EFG\FC\F8\F3\10\F1\10\AC')\98\F3\EB0\CE\B02;\BB*\A9u\9C\E0\93\A7\B9\F1\EC\A1\C3\E6_\A4\BEu\EF\AE\AC\AB\82\05\91.6v\1A\A9\04b\FB\A5\E2\B5\08e\92z[|\CE<Z\ED6\BAE*\10c\C4\AAb\EE\CD<\BA4\14\A7E\F6\F9-\16\FCQyc\FB\83i(\FD\976\83\03\0B\FDi\EB$\A6\D8\FBt\BC\84v\9Clf\04\B1;\079\9Dj!k\D4\A9\031j\A2l7\EFc\C1\AC|%\0E\1C6\A3\22\E1\9Dd\18\00\02\00\00\10\00\00\03\00\00\00\12\00\00\00\00\10\00\00 \00\00\00\D2\A0\CAx\B2\5C\7F\1F\A0}_\02\B2{\7F\04\F2\01\8F2{\FB\F2\D6\88L\0Ba+\17\C7I\11\00\00\00\00\10\00\00\10\00\00\00*\CD \FD/\FF\08\B3\FB\F8\B2\07x\BD\D4\D8\17\00\00\00\00\10\00\00\10\00\00\00l7\EFc\C1\AC|%\0E\1C6\A3\22\E1\9Dd:\00\00\00\00\00\00\00:\00\00\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00.\00C\00O\00M\00h\00o\00s\00t\00v\00m\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00"
+}
+{
+key(26) = "SECRETS/SID/VM-10-0-111-60"
+data(68) = "\01\04\00\00\00\00\00\05\15\00\00\00$\EC\A4)\CE\C5\96\00rY\091\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+}
+{
+key(49) = "SECRETS/SALTING_PRINCIPAL/DES/T2ADPY12R83G002.COM"
+data(60) = "host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM\00"
+}
+{
+key(48) = "SECRETS/MACHINE_LAST_CHANGE_TIME/T2ADPY12R83G002"
+data(4) = "\8DT\07_"
+}
+{
+key(48) = "SECRETS/MACHINE_SEC_CHANNEL_TYPE/T2ADPY12R83G002"
+data(4) = "\02\00\00\00"
+}
+
+
+8. Configure /etc/sssd.conf for keytab rotation and also add ad_update_samba_machine_account_password
+
+
+[sssd]
+domains = t2adpy12r83g002.com
+config_file_version = 2
+services = nss, pam
+
+[domain/t2adpy12r83g002.com]
+ad_domain = t2adpy12r83g002.com
+krb5_realm = T2ADPY12R83G002.COM
+realmd_tags = manages-system joined-with-samba
+cache_credentials = True
+id_provider = ad
+krb5_store_password_if_offline = True
+default_shell = /bin/bash
+ldap_id_mapping = True
+use_fully_qualified_names = True
+fallback_homedir = /home/%u@%d
+access_provider = ad
+ad_maximum_machine_account_password_age = 1
+ad_machine_account_password_renewal_opts = 300:15
+ad_update_samba_machine_account_password = True
+debug_level = 9
+
+
+9. Reset machine password (setpwdLastSet=0)
+
+$ ldapmodify -x -D cn=Administrator,CN=Users,DC=t2adpy12r83g002,DC=com -w Secret123 -h ci-vm-10-0-107-77.hosted.upshift.rdu2.redhat.com -f /tmp/mod.ldif
+modifying entry "CN=vm-10-0-111-60,CN=Computers,DC=t2adpy12r83g002,DC=com"
+
+10. Restart sssd 
+
+11. Run klist -k /etc/krb5.keytab
+
+$ klist -k /etc/krb5.keytab
+ Keytab name: FILE:/etc/krb5.keytab
+ KVNO Principal
+ ---- --------------------------------------------------------------------------
+    1 restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 host/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 host/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    1 host/VM-10-0-111-60@T2ADPY12R83G002.COM
+    1 VM-10-0-111-60$@T2ADPY12R83G002.COM
+    1 VM-10-0-111-60$@T2ADPY12R83G002.COM
+    1 VM-10-0-111-60$@T2ADPY12R83G002.COM
+    2 VM-10-0-111-60$@T2ADPY12R83G002.COM
+    2 VM-10-0-111-60$@T2ADPY12R83G002.COM
+    2 restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    2 restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    2 restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM
+    2 restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM
+    2 host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    2 host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM
+    2 host/VM-10-0-111-60@T2ADPY12R83G002.COM
+    2 host/VM-10-0-111-60@T2ADPY12R83G002.COM
+
+
+12. Run sha1hmac on secrets.tdb and compare the sha1mac to check if secrets.tdb file is modifed. 
+
+$ sha1hmac /var/lib/samba/private/secrets.tdb
+
+e607557ee862d4e65eb46fbb5d40f899ab74d672  /var/lib/samba/private/secrets.tdb
+
+13. stat /var/lib/samba/private/secrets.tdb
+
+$ stat /var/lib/samba/private/secrets.tdb
+   File: /var/lib/samba/private/secrets.tdb
+   Size: 581632    	Blocks: 1136       IO Block: 4096   regular file
+ Device: fc03h/64515d	Inode: 25230056    Links: 1
+ Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)
+ Context: system_u:object_r:samba_var_t:s0
+ Access: 2020-07-09 13:33:04.932529787 -0400
+ Modify: 2020-07-09 13:33:04.860529787 -0400
+ Change: 2020-07-09 13:33:04.860529787 -0400
+
+
+14. tdbdump of secrets.tdb
+
+$ tdbdump /var/lib/samba/private/secrets.tdb
+{
+key(35) = "SECRETS/PROTECT/IDS/T2ADPY12R83G002"
+data(5) = "TRUE\00"
+}
+{
+key(40) = "SECRETS/MACHINE_PASSWORD/T2ADPY12R83G002"
+data(121) = "7D-Ii5=Nv6[x/Xbl]K+uv3GAv5x2Ms.*<rRMUl:0-pFAw:\5Co\5ClW)4o&6I(7a-kb\5CJ&q6W,%rUD<sIG:kjECYw7T#Jw9Q/vH0=^<zN+iK<%XkMK<YUWszk]?_\00"
+}
+{
+key(27) = "SECRETS/SID/T2ADPY12R83G002"
+data(68) = "\01\04\00\00\00\00\00\05\15\00\00\00\F2{\15\A1\A5\E63\5C.\A8\B3\98\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+}
+{
+key(31) = "SECRETS/DOMGUID/T2ADPY12R83G002"
+data(16) = "\C0}\84d\90\BC\C6K\87&\BC\8D\09T\0E\F4"
+}
+{
+key(43) = "SECRETS/MACHINE_DOMAIN_INFO/T2ADPY12R83G002"
+data(1804) = "\01\00\00\00\00\00\00\00\01\00\00\00\00\00\02\00\00\00\00\00\00\00\00\00\C6@\81\D8\16V\D6\01\0F\00\00\00\00\00\00\00\0F\00\00\00V\00M\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00V\00M\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00$\00\00\00\02\00\00\00\1E\00 \00\04\00\02\00&\00(\00\08\00\02\00&\00(\00\0C\00\02\00\C0}\84d\90\BC\C6K\87&\BC\8D\09T\0E\F4\10\00\02\00\1A\00\00\00\02\00\00\00@\00\00\00\00\00\00\00\1F\00\00\00\14\00\02\00*F\95\00\17V\D6\01\02\00\00\00\00\00\00\00\00\00\00\00\F1\AE\F1\AE\18\00\02\00\00\00\00\00\10\00\00\00\00\00\00\00\0F\00\00\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00\00\00\14\00\00\00\00\00\00\00\13\00\00\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\14\00\00\00\00\00\00\00\13\00\00\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\04\00\00\00\01\04\00\00\00\00\00\05\15\00\00\00\F2{\15\A1\A5\E63\5C.\A8\B3\98<\00\00\00\00\00\00\00<\00\00\00h\00o\00s\00t\00/\00v\00m\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00@\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00.\00C\00O\00M\00\00\00*F\95\00\17V\D6\01\0A\00\00\00\00\00\00\00\0A\00\00\00l\00o\00c\00a\00l\00h\00o\00s\00t\00\00\00\F0\00\00\007\00D\00-\00I\00i\005\00=\00N\00v\006\00[\00x\00/\00X\00b\00l\00]\00K\00+\00u\00v\003\00G\00A\00v\005\00x\002\00M\00s\00.\00*\00<\00r\00R\00M\00U\00l\00:\000\00-\00p\00F\00A\00w\00:\00\5C\00o\00\5C\00l\00W\00)\004\00o\00&\006\00I\00(\007\00a\00-\00k\00b\00\5C\00J\00&\00q\006\00W\00,\00%\00r\00U\00D\00<\00s\00I\00G\00:\00k\00j\00E\00C\00Y\00w\007\00T\00#\00J\00w\009\00Q\00/\00v\00H\000\00=\00^\00<\00z\00N\00+\00i\00K\00<\00%\00X\00k\00M\00K\00<\00Y\00U\00W\00s\00z\00k\00]\00?\00_\00\D3QH\FE\C8\1D\1Ci\179iU\B7n\5Cv\1C\00\02\00\00\10\00\00\03\00\00\00\12\00\00\00\00\10\00\00 \00\00\00\F6r\83\AB\E9\E6ou\FDV\E4\BD\B3\19E5K\97\FC\A1H[\AB.3\9E\E8\F6\9EG)\AB\11\00\00\00\00\10\00\00\10\00\00\00\DF\0F\88y\F9\B3\F4!Abtlo\18c\A5\17\00\00\00\00\10\00\00\10\00\00\00\D3QH\FE\C8\1D\1Ci\179iU\B7n\5Cv:\00\00\00\00\00\00\00:\00\00\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00.\00C\00O\00M\00h\00o\00s\00t\00v\00m\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\C6@\81\D8\16V\D6\01\1F\00\00\00\00\00\00\00\1F\00\00\00a\00d\00p\00y\001\002\008\003\00t\002\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00\00\00\84\01\00\00^\E9\8De\14j\12\F9\11\F6\0F\B4\95/\A4\EA\A1\F7a\AD\F8:\EF5\AB6q\F9\E5*\C42\16\05M\ED\EF\A8?wp;\AF&h\F0\84\B07iJ{\17\07\0C;\0C$_\EA\B4\E9Ok[qu\BC\CB\B0\C3\E0\F3-J\F1oa\BEkR9><U`|\FB\CFxJ<\E3\EF\FD\AB\A7\BE#\AF\86\AB\96\A5. C\EAuz\F8\B0\9Bx\C64\22`\F6\EC<\7F=\B8X!\EB\F7\A9'\11\F3\EE8Y\AAT\AA>f2\ED\958\91\A0\A0<\99\AEY\B4i\06\F4h\0F7\B7\A4\0FnN6P\AE\0B\00\BB\F2\88,K\F7X1\95\07\ADl\FEx\AD\A2\D7\B1\F9\AB\CD\F9\AD\E5\0F\B27\BB\9D\EFr\E9C\BA\81\BB\D1,\D6\BB\88\E5\80\A0\0D\AA=d\87i\81e3\FD)#\05qwbd\B3\05}\1D<\7F\EB\97o\0B\E4\88h\97~W\B6N\A1Mt\C6-y\AC\D3\AB\C6hT\EFG\FC\F8\F3\10\F1\10\AC')\98\F3\EB0\CE\B02;\BB*\A9u\9C\E0\93\A7\B9\F1\EC\A1\C3\E6_\A4\BEu\EF\AE\AC\AB\82\05\91.6v\1A\A9\04b\FB\A5\E2\B5\08e\92z[|\CE<Z\ED6\BAE*\10c\C4\AAb\EE\CD<\BA4\14\A7E\F6\F9-\16\FCQyc\FB\83i(\FD\976\83\03\0B\FDi\EB$\A6\D8\FBt\BC\84v\9Clf\04\B1;\079\9Dj!k\D4\A9\031j\A2l7\EFc\C1\AC|%\0E\1C6\A3\22\E1\9Dd \00\02\00\00\10\00\00\03\00\00\00\12\00\00\00\00\10\00\00 \00\00\00\D2\A0\CAx\B2\5C\7F\1F\A0}_\02\B2{\7F\04\F2\01\8F2{\FB\F2\D6\88L\0Ba+\17\C7I\11\00\00\00\00\10\00\00\10\00\00\00*\CD \FD/\FF\08\B3\FB\F8\B2\07x\BD\D4\D8\17\00\00\00\00\10\00\00\10\00\00\00l7\EFc\C1\AC|%\0E\1C6\A3\22\E1\9Dd:\00\00\00\00\00\00\00:\00\00\00T\002\00A\00D\00P\00Y\001\002\00R\008\003\00G\000\000\002\00.\00C\00O\00M\00h\00o\00s\00t\00v\00m\00-\001\000\00-\000\00-\001\001\001\00-\006\000\00.\00t\002\00a\00d\00p\00y\001\002\00r\008\003\00g\000\000\002\00.\00c\00o\00m\00\00\00"
+}
+{
+key(26) = "SECRETS/SID/VM-10-0-111-60"
+data(68) = "\01\04\00\00\00\00\00\05\15\00\00\00$\EC\A4)\CE\C5\96\00rY\091\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00"
+}
+{
+key(49) = "SECRETS/SALTING_PRINCIPAL/DES/T2ADPY12R83G002.COM"
+data(60) = "host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM\00"
+}
+{
+key(45) = "SECRETS/MACHINE_PASSWORD.PREV/T2ADPY12R83G002"
+data(574) = "\EE\A5\9E\E6\96\8D\E6\A8\94\EF\A4\92\EF\98\91\EB\90\8F\E2\BE\95\EE\AA\A4\EF\9E\A1\EA\B5\A1\E3\AB\B8\E3\97\AF\E3\9A\AB\EF\A5\B1\E2\AB\A5\E3\8B\84\D4\96\EE\B5\8D\EA\A3\AF\E7\9C\BF\E3\AD\B0\E2\9A\AF\EF\81\A8\EB\82\84\E6\A4\B7\E7\AD\8A\DC\97\E3\AC\8C\E2\90\8C\EE\A9\9F\EE\A6\B4\E6\AD\8F\E7\85\9B\EB\B1\B5\EB\83\8B\EE\83\83\E2\B7\B3\EF\85\8A\E6\85\AF\E6\AE\BE\E3\A5\92\E3\B0\BE\E6\81\95\EF\AD\BC\E7\A3\8F\E3\B1\8A\EE\BF\A3\EA\AF\BD\EB\BA\A7\EA\BC\A3\EA\AE\86\EA\96\96\E2\80\AE\EE\A9\83\E7\A9\B5\EB\83\B8\E7\A2\9B\E3\93\86\E6\80\A2\EE\B3\B6\E7\BC\BC\EB\A0\BD\E2\85\98\EF\9F\AB\E2\9E\A9\EF\8C\91\E3\A3\AE\EA\A9\99\EA\A9\94\E6\98\BE\EE\B4\B2\E3\A2\95\EA\82\91\E3\B2\A0\EA\BA\99\EB\91\99\D9\A9\E6\A3\B4\E3\9C\8F\EA\92\B7\E6\B8\8F\E3\99\8E\EA\B9\90\0B\EF\8A\BB\E2\B2\88\EF\9D\8B\E3\85\98\DE\95\E6\B2\AD\E7\A3\BE\EA\8A\AD\EB\87\97\EA\AF\B9\EF\A7\8D\EE\96\AD\EB\88\8F\EB\AC\B7\EE\BE\9D\EE\A5\B2\EB\A9\83\EB\AE\81\E2\B3\91\EB\AF\96\EE\96\88\EA\82\80\EA\A8\8D\E6\90\BD\E6\A6\87\E6\96\81\EF\B4\B3\E2\8C\A9\E7\84\85\E6\89\B7\EB\8D\A4\E7\B4\85\E3\B0\9D\EE\AD\BF\E6\BE\97\EE\90\8B\E6\A2\88\E7\BA\97\EB\99\97\EA\85\8E\E7\91\8D\E2\B7\86\EA\B1\B9\EA\AF\93\E6\A3\86\EE\BD\94\EF\B1\87\EF\8F\B8\EF\84\90\EA\B0\90\E2\A4\A7\EF\8E\98\E3\83\AB\EB\83\8E\E3\AC\B2\E2\AA\BB\E7\96\A9\EE\82\9C\EA\9E\93\EF\86\B9\EA\87\AC\EE\9B\83\EA\91\9F\E7\96\BE\EA\BB\AF\EA\AE\AC\D6\82\E2\BA\91\E7\98\B6\EA\A4\9A\E6\88\84\EA\97\BB\EB\97\A2\E6\94\88\E7\AA\92\E7\B1\9B\E3\B3\8E\EE\B5\9A\EB\A8\B6\E2\A9\85\E6\8C\90\EA\AB\84\EE\B9\A2\E3\B3\8D\E3\92\BA\EA\9C\94\EF\99\85\E2\B7\B9\EF\B0\96\E7\A5\91\EF\AD\A3\E6\A6\83\EF\B4\A8\E3\9A\97\CE\83\EF\B4\8B\EE\AD\A9\EA\98\A4\EF\AF\98\EB\B1\B4\E7\9A\84\E6\B2\9C\D1\A6\E3\AE\B1\E3\A4\87\E6\AA\9D\E6\AC\A1\EA\A7\94\E3\84\83\EA\89\AA\00"
+}
+{
+key(48) = "SECRETS/MACHINE_LAST_CHANGE_TIME/T2ADPY12R83G002"
+data(4) = "\D0T\07_"
+}
+{
+key(48) = "SECRETS/MACHINE_SEC_CHANNEL_TYPE/T2ADPY12R83G002"
+data(4) = "\02\00\00\00"
+}
+
+15. adcli messages in in sssd domain logs 
+
+(2020-07-09 13:33:05): [be[t2adpy12r83g002.com]] [read_pipe_handler] (0x0400): EOF received, client finished
+(2020-07-09 13:33:05): [be[t2adpy12r83g002.com]] [ad_machine_account_password_renewal_done] (0x1000): --- adcli output start---
+* Found realm in keytab: T2ADPY12R83G002.COM
+* Found service principal in keytab: restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com
+* Found service principal in keytab: restrictedkrbhost/VM-10-0-111-60
+* Found service principal in keytab: host/vm-10-0-111-60.t2adpy12r83g002.com
+* Found host qualified name in keytab: vm-10-0-111-60.t2adpy12r83g002.com
+* Found service principal in keytab: host/VM-10-0-111-60
+* Found computer name in keytab: VM-10-0-111-60
+* Using fully qualified name: vm-10-0-111-60.hosted.upshift.rdu2.redhat.com
+* Using domain name: t2adpy12r83g002.com
+* Calculated computer account name from fqdn: VM-10-0-111-60
+* Using domain realm: t2adpy12r83g002.com
+* Sending NetLogon ping to domain controller: adpy1283t2.t2adpy12r83g002.com
+* Received NetLogon info from: adpy1283t2.t2adpy12r83g002.com
+* Wrote out krb5.conf snippet to /tmp/adcli-krb5-1hEXT4/krb5.d/adcli-krb5-conf-7nyPu0
+* Authenticated as default/reset computer account: VM-10-0-111-60
+* Using GSS-SPNEGO for SASL bind
+* Looked up short domain name: T2ADPY12R83G002
+* Looked up domain SID: S-1-5-21-2702539762-1546905253-2561910830
+* Using fully qualified name: vm-10-0-111-60.hosted.upshift.rdu2.redhat.com
+* Using domain name: t2adpy12r83g002.com
+* Using computer account name: VM-10-0-111-60
+* Using domain realm: t2adpy12r83g002.com
+* Using fully qualified name: vm-10-0-111-60.t2adpy12r83g002.com
+* Enrolling computer name: VM-10-0-111-60
+* Generated 120 character computer password
+* Using keytab: FILE:/etc/krb5.keytab
+* Found computer account for VM-10-0-111-60$ at: CN=VM-10-0-111-60,CN=Computers,DC=t2adpy12r83g002,DC=com
+* Retrieved kvno '1' for computer account in directory: CN=VM-10-0-111-60,CN=Computers,DC=t2adpy12r83g002,DC=com
+* Sending NetLogon ping to domain controller: adpy1283t2.t2adpy12r83g002.com
+* Received NetLogon info from: adpy1283t2.t2adpy12r83g002.com
+* Changed computer password
+* kvno incremented to 2
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Checking RestrictedKrbHost/VM-10-0-111-60
+*    Added RestrictedKrbHost/VM-10-0-111-60
+* Checking HOST/VM-10-0-111-60
+*    Added HOST/VM-10-0-111-60
+* Checking RestrictedKrbHost/VM-10-0-111-60.t2adpy12r83g002.com
+*    Added RestrictedKrbHost/VM-10-0-111-60.t2adpy12r83g002.com
+* Checking HOST/VM-10-0-111-60.t2adpy12r83g002.com
+*    Added HOST/VM-10-0-111-60.t2adpy12r83g002.com
+* Trying to set Samba secret.
+* Trying to set domain SID S-1-5-21-2702539762-1546905253-2561910830 for Samba.
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Discovered which keytab salt to use
+* Added the entries to the keytab: VM-10-0-111-60$@T2ADPY12R83G002.COM: FILE:/etc/krb5.keytab
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Added the entries to the keytab: restrictedkrbhost/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM: FILE:/etc/krb5.keytab
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Added the entries to the keytab: restrictedkrbhost/VM-10-0-111-60@T2ADPY12R83G002.COM: FILE:/etc/krb5.keytab
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Added the entries to the keytab: host/vm-10-0-111-60.t2adpy12r83g002.com@T2ADPY12R83G002.COM: FILE:/etc/krb5.keytab
+* Encryption type [1] not permitted.
+* Encryption type [3] not permitted.
+* Encryption type [23] not permitted.
+* Added the entries to the keytab: host/VM-10-0-111-60@T2ADPY12R83G002.COM: FILE:/etc/krb5.keytab
+---adcli output end---
+
+
+
+
+

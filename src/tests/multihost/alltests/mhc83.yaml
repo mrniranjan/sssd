@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+      type: sssd
+      hosts:
+        - name: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          external_hostname: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          role: client
+        - name: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          external_hostname: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          role: master
+        - name: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          external_hostname: ipaqavmh.idmqe.lab.eng.bos.redhat.com
+          role: master

@@ -1,0 +1,23 @@
+domains:
+- hosts:
+  - external_hostname: ci-vm-10-0-103-131.hosted.upshift.rdu2.redhat.com
+    ip: 10.0.103.131
+    name: ci-vm-10-0-103-131.hosted.upshift.rdu2.redhat.com
+    role: master
+  - external_hostname: ci-vm-10-0-100-229.hosted.upshift.rdu2.redhat.com
+    ip: 10.0.100.229
+    name: ci-vm-10-0-100-229.hosted.upshift.rdu2.redhat.com
+    role: client
+  name: testrealm.test
+  type: sssd
+- hosts:
+  - external_hostname: srv1.cygnus.test
+    host_type: windows
+    ip: 10.65.201.120
+    name: srv1.cygnus.test
+    password: Secret123
+    role: ad
+    username: Administrator
+  name: cygnus.test
+  type: ad
+root_password: 'redhat'

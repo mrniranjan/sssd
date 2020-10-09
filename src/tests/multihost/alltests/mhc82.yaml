@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: testrealm.test
+      type: sssd
+      hosts:
+        - name: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          external_hostname: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          role: client
+        - name: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          external_hostname: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          role: master
+        - name: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          external_hostname: ibm-x3650m4-01-vm-16.ibm2.lab.eng.bos.redhat.com
+          role: master

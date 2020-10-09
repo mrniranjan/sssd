@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: example.test
+      type: sssd
+      hosts:
+        - name: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          external_hostname: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          role: client
+        - name: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          external_hostname: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          role: master
+        - name: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          external_hostname: cloud-qe-09.idmqe.lab.eng.bos.redhat.com
+          role: master

@@ -1,0 +1,14 @@
+root_password: 'redhat'
+domains:
+    - name: ds-perf.testrealm.test
+      type: sssd
+      hosts:
+        - name: ds-perf.testrealm.test 
+          external_hostname: ds-perf.testrealm.test 
+          role: client
+        - name: ds-perf.testrealm.test
+          external_hostname: ds-perf.testrealm.test
+          role: master
+        - name: ds-perf.testrealm.test
+          external_hostname: ds-perf.testrealm.test
+          role: master

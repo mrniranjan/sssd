@@ -3,3 +3,5 @@ pytest
 pytest_multihost
 python-ldap
 PyYAML
+sphinx
+pexpect

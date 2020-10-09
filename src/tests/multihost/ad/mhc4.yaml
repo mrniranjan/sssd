@@ -1,0 +1,22 @@
+windows_test_dir: '/home/administrator'
+root_password: 'redhat'
+domains:
+    - name: testrelm.test
+      type: sssd
+      hosts:
+        - name: client1.testrealm.test
+          external_hostname: client1.testrealm.test
+          role: client
+        - name:  vm-10-0-154-49.hosted.upshift.rdu2.redhat.com
+          external_hostname: vm-10-0-154-49.hosted.upshift.rdu2.redhat.com
+          role:  master
+    - name: SARABHAI.TEST
+      type: ad
+      hosts:
+        - name: vikram.sarabhai.test
+          external_hostname: vikram.sarabhai.test
+          ip: 192.168.122.216
+          role: 'ad'
+          username: 'Administrator'
+          password: 'Secret123'
+          host_type: 'windows'
